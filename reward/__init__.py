@@ -26,10 +26,11 @@ class PaymentInfo(Page):
 
     @staticmethod
     def js_vars(player):
-        return dict(
-            completionlink=
-              player.subsession.session.config['completionlink'],
+        if player.participant.is_dropout:
+            completionlink = player.subsession.session.config['completionlink_full'] # those who timed out get just the base pay, just like those who couldnt be grouped
+        else:
+            completionlink = player.subsession.session.session.config['completionlink']
 
-        )
+        return dict(completionlink=completionlink)
 
 page_sequence = [PaymentInfo]

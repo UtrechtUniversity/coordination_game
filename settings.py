@@ -8,7 +8,7 @@ SESSION_CONFIGS = [
         group_size=4,
         network_condition="test_n4",
         app_sequence=[ "arrive", "unpop", "survey", "reward"],
-        completionlink='https://app.prolific.com/submissions/complete?cc=CGMXM1XJ',
+        completionlink='https://app.prolific.com/submissions/complete?cc=CI5BFLAB',
         completionlink_full='https://app.prolific.com/submissions/complete?cc=ZZZZ',
         completionlink_no_invite='https://app.prolific.com/submissions/complete?cc=XXXX',
         use_browser_bots=False,
@@ -33,7 +33,7 @@ title = 'The Fashion Dilemma'
 majority_role = 'Red'
 minority_role = 'Blue'
 p_minority = 0.1 # !!this needs to correspond to the proportion of minorities in the network configuration!!
-num_rounds = 8 #set back to 30!
+num_rounds = 2 #set back to 30!
 
 # including also the incentive structure
 s = 15
