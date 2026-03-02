@@ -14,6 +14,18 @@ SESSION_CONFIGS = [
         use_browser_bots=False,
     ),
 
+    dict(
+        name="unpopular_norm_50",
+        display_name="test_n50",
+        num_demo_participants=200,
+        group_size=50,
+        network_condition="test_n50",
+        app_sequence=[ "arrive", "unpop", "survey", "reward"],
+        completionlink='https://app.prolific.com/submissions/complete?cc=CI5BFLAB',
+        completionlink_full='https://app.prolific.com/submissions/complete?cc=CKGTTDJJ',
+        completionlink_no_invite='https://app.prolific.com/submissions/complete?cc=CG1SAGQG',
+        use_browser_bots=False,
+    ),
 ]
 
 # set some central parameters to be used across apps:
@@ -21,7 +33,7 @@ title = 'The Fashion Dilemma'
 majority_role = 'Red'
 minority_role = 'Blue'
 p_minority = 0.1 # !!this needs to correspond to the proportion of minorities in the network configuration!!
-num_rounds = 2 #set back to 30!
+num_rounds = 25 #set back to 30! no, instead, 25; but the conversion rate needs to be adjusted based on this (x30/25).
 
 # including also the incentive structure
 s = 15
