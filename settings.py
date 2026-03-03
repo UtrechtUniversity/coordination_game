@@ -33,7 +33,7 @@ title = 'The Fashion Dilemma'
 majority_role = 'Red'
 minority_role = 'Blue'
 p_minority = 0.1 # !!this needs to correspond to the proportion of minorities in the network configuration!!
-num_rounds = 25 #set back to 30! no, instead, 25; but the conversion rate needs to be adjusted based on this (x30/25).
+num_rounds = 25
 
 # including also the incentive structure
 s = 15
@@ -46,8 +46,8 @@ lambda2 = 1.8
 # and payment variables (base pay; conversion rates; etc.)
 base_payment = 2.5 #base pay of 2.50 (for estimated 25 min.)
 max_payment = 7.5 #max of 7.50
-points_per_euro_majority = 200 #conversion (assuming 30 rounds!!)
-points_per_euro_minority = 40
+points_per_euro_majority = 167  #200 (assuming 30 rounds)
+points_per_euro_minority = 33  #40 (assuming 30 rounds)
 
 # I want to test the whole infrastructure (entering from prolific, consenting, group formation, etc.);
 testing = False

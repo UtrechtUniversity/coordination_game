@@ -14,9 +14,39 @@ body {
     background-color: #eef1f5;
     color: #4a4a4a;
 }
+
+.instruction-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.instruction-modal {
+    background: white;
+    padding: 25px;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    line-height: 1.5;
+}
+
+.instruction-close {
+    margin-top: 15px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+
 </style>
 {% endblock %}
-
 
 {% load otree %}
 
@@ -34,6 +64,13 @@ and won’t be grouped until you return.</p>
 <p id="refresh-msg" style="margin-top: 10px; font-style: italic; color: gray;">
     Refreshing in <span id="countdown">10</span> seconds...
 </p>
+
+<div style="text-align:center; margin-bottom:15px;">
+    <button id="instruction-summary-btn"
+            style="padding:8px 14px; font-size:15px;">
+        For a summary of the instructions, click here
+    </button>
+</div>
 
 <hr style="margin: 20px 0;">
 
@@ -53,6 +90,7 @@ and won’t be grouped until you return.</p>
     </span> to jump (hold to jump higher) and avoid the obstacles.
 </p>
 
+
 <div style="text-align:center;">
     <canvas class="dino-canvas" width="600" height="150" style="border:1px solid #ccc;"></canvas>
     <br>
@@ -60,6 +98,39 @@ and won’t be grouped until you return.</p>
         Start
     </button>
 </div>
+
+<div class="instruction-overlay" id="instruction-overlay">
+    <div class="instruction-modal" id="instruction-modal">
+
+        <h3>Summary of instructions</h3>
+        <p>
+            You will play a multiplayer network game with <strong>50 players</strong>, spanning between <strong>22–28 rounds</strong>.
+            In each round, choose between wearing a red or blue shirt. Some players prefer red, others blue. One group holds a <strong>majority</strong>, but you don't know which one.
+        </p>
+        <p>
+            At the start of each round, tap the button to choose your color.
+            You may also recall your neighbors’ previous choices.
+        </p>
+        <p>
+            Decision time: <strong>60 seconds</strong> in rounds 1–2, then <strong>20 seconds</strong> afterward. Pay close attention!
+        </p>
+        <p>
+            <i>Your preferred shirt color is
+                <strong>{% if role == "Red" %}
+                    <span style="color:red;">Red</span>
+                {% elif role == "Blue" %}
+                    <span style="color:blue;">Blue</span>
+                {% else %}
+                    {{ role }}</strong>
+                {% endif %}
+            </i>
+        </p>
+        <button class="instruction-close" id="instruction-close-btn">Close</button>
+
+    </div>
+</div>
+
+
 {% endblock %}
 
 {% block scripts %}
@@ -68,15 +139,16 @@ and won’t be grouped until you return.</p>
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
 />
-
 <script>
     let seconds = 10;
     const countdownEl = document.getElementById('countdown');
-    window.gameActive = false;
 
-    // Countdown + reload
+    window.gameActive = false;
+    window.overlayActive = false;
+
+    // Countdown + reload (pause if game or overlay active)
     const countdownInterval = setInterval(() => {
-        if (!window.gameActive) {
+        if (!window.gameActive && !window.overlayActive) {
             seconds--;
             countdownEl.textContent = seconds;
 
@@ -138,6 +210,7 @@ and won’t be grouped until you return.</p>
                     dino.x + dino.width > ob.x &&
                     dino.y < ob.y + ob.height &&
                     dino.y + dino.height > ob.y) {
+
                     gameOver = true;
                     window.gameActive = false;
 
@@ -180,12 +253,14 @@ and won’t be grouped until you return.</p>
             } else {
                 ctx.fillStyle = "black";
                 ctx.font = "24px Arial";
+                ctx.font = "24px Arial";
                 ctx.fillText("Game Over!", 230, 80);
             }
         }
 
         document.addEventListener('keydown', e => {
             keys[e.code] = true;
+
             if ((e.code === "Space" || e.code === "ArrowUp") && !dino.jumping) {
                 dino.dy = jumpPower;
                 dino.jumping = true;
@@ -206,6 +281,27 @@ and won’t be grouped until you return.</p>
     });
 })();
 
+// instruction summary
+const summaryBtn = document.getElementById("instruction-summary-btn");
+const overlay = document.getElementById("instruction-overlay");
+const closeBtn = document.getElementById("instruction-close-btn");
+
+summaryBtn.addEventListener("click", () => {
+    overlay.style.display = "flex";
+    window.overlayActive = true;
+});
+
+closeBtn.addEventListener("click", () => {
+    overlay.style.display = "none";
+    window.overlayActive = false;
+});
+
+overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+        overlay.style.display = "none";
+        window.overlayActive = false;
+    }
+});
 </script>
 
 {% endblock %}
