@@ -29,7 +29,7 @@ class PaymentInfo(Page):
         if player.participant.is_dropout:
             completionlink = player.subsession.session.config['completionlink_full'] # those who timed out get just the base pay, just like those who couldnt be grouped
         else:
-            completionlink = player.subsession.session.session.config['completionlink']
+            completionlink = player.subsession.session.config['completionlink']
 
         return dict(completionlink=completionlink)
 
