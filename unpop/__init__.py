@@ -44,7 +44,7 @@ class Constants(BaseConstants):
     lambda2 = L2
     introduction_timeout_seconds = 90
     decision_pages_timeout_seconds = 60
-    other_pages_timeout_seconds = 20
+    other_pages_timeout_seconds = 15
     points_per_euro_majority = PPE1
     points_per_euro_minority = PPE2
     base_payment = base

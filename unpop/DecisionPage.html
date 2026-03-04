@@ -227,9 +227,11 @@ h3 {
 {% endif %}
 
 {% if round_number == 3 or round_number == 4 %}
-<div id="warning-banner">
-    <strong> Warning</strong>: In the upcoming rounds you only have <strong>{{timeout_seconds}} seconds</strong> to make a decision!
-</div>
+    {% if not is_drop_out %}
+        <div id="warning-banner">
+            <strong> Warning</strong>: In the upcoming rounds you only have <strong>{{ timeout_seconds }} seconds</strong> to make a decision!
+        </div>
+    {% endif %}
 {% endif %}
 
 <div class="form-container">
