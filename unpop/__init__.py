@@ -65,6 +65,7 @@ class Subsession(BaseSubsession):
                 self.session.vars["net_spec"] = net
 
             self.session.vars["group_formed"] = False
+
         else:
             self.group_like_round(1)
 
