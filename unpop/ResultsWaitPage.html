@@ -56,18 +56,14 @@ body {
 
 {% block content %}
 
-{% if is_drop_out %}
-        <div id="dropout-overlay">
-            <div class="dropout-message">
-                <h2>You have exited the game</h2>
-                <p>You did not proceed within the allowed time.</p>
-                <p>You may now close this window.</p>
-            </div>
+{% if exit %}
+<div id="dropout-overlay">
+    <div class="dropout-message">
+        <h2>You have exited the game</h2>
+        <p>You did not proceed within the allowed time.</p>
+        <p>You may now close this window.</p>
+    </div>
 </div>
-
-
-
-
 {% endif %}
 
 <p><strong>Waiting for the other players…</strong></p>
@@ -264,6 +260,7 @@ body {
         createGame();
     });
 })();
+
 </script>
 
 

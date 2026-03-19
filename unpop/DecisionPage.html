@@ -216,14 +216,14 @@ h3 {
 
 {% block content %}
 
-   {% if is_drop_out %}
-        <div id="dropout-overlay">
-            <div class="dropout-message">
-                <h2>You have exited the game</h2>
-                <p>You did not proceed within the allowed time.</p>
-                <p>You may now close this window.</p>
-            </div>
-        </div>
+{% if exit %}
+<div id="dropout-overlay">
+    <div class="dropout-message">
+        <h2>You have exited the game</h2>
+        <p>You did not proceed within the allowed time.</p>
+        <p>You may now close this window.</p>
+    </div>
+</div>
 {% endif %}
 
 {% if round_number == 3 or round_number == 4 %}

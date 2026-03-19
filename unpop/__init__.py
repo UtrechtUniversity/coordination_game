@@ -27,6 +27,7 @@ doc = """
 Players enter the group formation page, where they wait until sufficient players (of both roles) arrive.
 A group is then formed and the game begins.
 Those who arrive too late return to Prolific (two routes, depending on whether they were invited or not).
+After timing out, players can return to the game. If they time out twice without returning in time, they exit.
 """
 
 class Constants(BaseConstants):
@@ -77,6 +78,7 @@ class Player(BasePlayer):
     )
     prolific_id = models.StringField(default=str(" "))
     is_dropout = models.BooleanField(initial=False)
+    return_choice = models.BooleanField(initial=False)
     bonus = models.FloatField(initial=0) #field to store bonus (points converted to money, minus base pay)
     arrived_waitpage = models.BooleanField(initial=False)
     arrived_grouppage = models.BooleanField(initial=False)
@@ -126,7 +128,7 @@ def timeout_check(player, timeout_happened):
 
 def timeout_time(player, timeout_seconds):
     participant = player.participant
-    if participant.is_dropout:
+    if participant.vars.get('exit', False):
         return 1
     else:
         return timeout_seconds
@@ -288,13 +290,37 @@ class DecisionPage(Page):
         return timeout_time(player, timeout)
 
     def before_next_page(player, timeout_happened):
+        if 'consecutive_timeouts' not in player.participant.vars:
+            player.participant.vars['consecutive_timeouts'] = 0
+
+        if 'exit' not in player.participant.vars:
+            player.participant.vars['exit'] = False
+
         timeout_check(player, timeout_happened)
 
+        if timeout_happened:
+            player.participant.vars['consecutive_timeouts'] += 1
+        else:
+            player.participant.vars['consecutive_timeouts'] = 0
+            player.participant.is_dropout = False
+
+        #if playres miss 2 decision rounds and don't return, they exit
+        if player.participant.vars['consecutive_timeouts'] >= 2:
+            player.participant.vars['exit'] = True
+
+        # auto-submit on time-out
         if timeout_happened or player.participant.is_dropout:
             if player.participant.role == Constants.minority:
-                player.choice = True
+                player.choice = True  # always True
             else:
-                player.choice = (random.random() < p_minority)
+                if player.round_number > 1:
+                    prev_choice = player.in_round(player.round_number - 1).choice
+                    if prev_choice is not None:  # try to copy previous choice
+                        player.choice = prev_choice
+                    else:
+                        player.choice = (random.random() < p_minority)
+                else:  # first round, use probability
+                    player.choice = (random.random() < p_minority)
 
     @staticmethod
     def is_displayed(player: Player):
@@ -341,7 +367,35 @@ class DecisionPage(Page):
             num_blue_previous_round=num_blue_previous_round,
             num_red_previous_round=num_red_previous_round,
             is_drop_out=player.participant.is_dropout,
+            exit= player.participant.vars.get("exit"),
+            timeout_counter = player.participant.vars.get('consecutive_timeouts', 0),
             timeout_seconds = int(DecisionPage.get_timeout_seconds(player))
+        )
+
+class ReturnPage(Page):
+    form_model = 'player'
+    form_fields = ['return_choice']
+
+    def get_timeout_seconds(player):
+        return 10
+
+    def is_displayed(player):
+        return (
+                player.participant.is_dropout
+                and not player.participant.vars.get("exit_early", False)
+                and not player.participant.vars.get("exit", False)
+        )
+
+    def before_next_page(player, timeout_happened):
+        if player.return_choice:
+            player.participant.is_dropout = False
+            # reset consecutive timeouts on return
+            player.participant.vars['consecutive_timeouts'] = 0
+
+    def vars_for_template(player):
+        return dict(
+            exit = player.participant.vars.get("exit"),
+            timeout_counter = player.participant.vars.get('consecutive_timeouts', 0),
         )
 
 class ResultsWaitPage(WaitPage):
@@ -366,6 +420,7 @@ class ResultsWaitPage(WaitPage):
             total=total,
             percent=percent,
             is_drop_out=player.participant.is_dropout,
+            exit=player.participant.vars.get("exit"),
         )
 
     def after_all_players_arrive(group):
@@ -512,6 +567,7 @@ page_sequence = [
     NetworkFormationWaitPage,
     IntroductionPage,
     DecisionPage,
+    ReturnPage,
     ResultsWaitPage,
     ResultsPage,
     FinalGameResults,

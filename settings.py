@@ -86,7 +86,7 @@ SESSION_CONFIG_DEFAULTS = dict(
     doc="",
 )
 
-PARTICIPANT_FIELDS = [ "bonus", "consent", "is_dropout", "role", 'has_dropped_out', 'too_many_inactive_in_group','node', 'adj_matrix', 'role_vector', 'exit_early', 'failed_checks']
+PARTICIPANT_FIELDS = [ "bonus", "consent", "is_dropout", "consecutive_timeouts", "exit", "role", 'has_dropped_out', 'node', 'adj_matrix', 'role_vector', 'exit_early', 'failed_checks']
 LANGUAGE_CODE = "en"
 REAL_WORLD_CURRENCY_CODE = "EUR"
 USE_POINTS = True
