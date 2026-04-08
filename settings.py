@@ -13,18 +13,21 @@ SESSION_CONFIGS = [
         completionlink_no_invite='https://app.prolific.com/submissions/complete?cc=CG1SAGQG',
         use_browser_bots=False,
     ),
+
     dict(
-        name="unpopular_norm_10",
-        display_name="test_n10",
+        name="unpopular_norm_50_control",
+        display_name="test_n50_control",
         num_demo_participants=200,
-        group_size=10,
-        network_condition="test_n10",
-        app_sequence=["arrive", "unpop", "survey", "reward"],
+        group_size=50,
+        network_condition="test_n50_random",
+        app_sequence=[ "arrive", "unpop", "survey", "reward"],
         completionlink='https://app.prolific.com/submissions/complete?cc=CI5BFLAB',
         completionlink_full='https://app.prolific.com/submissions/complete?cc=CKGTTDJJ',
         completionlink_no_invite='https://app.prolific.com/submissions/complete?cc=CG1SAGQG',
         use_browser_bots=False,
     ),
+
+
     dict(
         name="unpopular_norm_50",
         display_name="test_n50",
